@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TaskFlow - Organize suas tarefas e acompanhe seu progresso.">
+    <title>TaskFlow | Gerenciador de Tarefas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-container">
+        <a href="#inicio" class="logo">TaskFlow</a>
+        <nav class="navigation" aria-label="Navegação principal">
+          <a href="#tarefas">Tarefas</a>
+          <a href="#estatisticas">Estatísticas</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Alternar tema">🌙</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="dashboard" id="inicio">
+        <div class="dashboard-header">
+          <div>
+            <span class="greeting">Olá</span>
+            <h1>Organize seu dia e acompanhe seu progresso.</h1>
+            <p>Gerencie suas tarefas de forma simples, rápida e organizada.</p>
+          </div>
+          <button class="add-task-button" type="button" id="add-task-btn">+ Nova tarefa</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-label">Total de tarefas</span>
+            <strong id="total-tasks">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Concluídas</span>
+            <strong id="completed-tasks">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Pendentes</span>
+            <strong id="pending-tasks">0</strong>
+          </article>
+        </div>
+
+        <div class="chart-card" id="estatisticas">
+          <div class="chart-card-header">
+            <div>
+              <span class="section-label">Visão geral</span>
+              <h2>Progresso das tarefas</h2>
+            </div>
+            <select id="chart-view" class="filter-select">
+              <option value="status">Concluídas x pendentes</option>
+              <option value="month">Tarefas por mês</option>
+              <option value="year">Tarefas por ano</option>
+            </select>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="stats-chart"></canvas>
+          </div>
+          <p class="chart-empty" id="chart-empty" hidden>Adicione tarefas com data para ver o gráfico.</p>
+        </div>
+      </section>
+
+      <section class="tasks-section" id="tarefas">
+        <div class="tasks-header">
+          <div>
+            <span class="section-label">Organização</span>
+            <h2>Minhas tarefas</h2>
+            <p>Acompanhe suas atividades e mantenha seu dia organizado.</p>
+          </div>
+          <div class="task-filters">
+            <button class="filter-button active" type="button" data-filter="all">Todas</button>
+            <button class="filter-button" type="button" data-filter="pending">Pendentes</button>
+            <button class="filter-button" type="button" data-filter="completed">Concluídas</button>
+          </div>
+        </div>
+
+        <div class="date-filters">
+          <div class="date-filter-group">
+            <label for="filter-month">Mês</label>
+            <select id="filter-month" class="filter-select"></select>
+          </div>
+          <div class="date-filter-group">
+            <label for="filter-year">Ano</label>
+            <select id="filter-year" class="filter-select"></select>
+          </div>
+          <button type="button" class="clear-filter-button" id="clear-date-filter">Limpar período</button>
+        </div>
+
+        <div class="tasks-list" id="tasks-list"></div>
+
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">✓</div>
+          <h3>Nenhuma tarefa por aqui</h3>
+          <p>Adicione uma nova tarefa para começar.</p>
+          <button class="empty-add-button" type="button" id="empty-add-btn">+ Adicionar tarefa</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="task-modal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="task-modal-title">
+        <h3 id="task-modal-title">Nova tarefa</h3>
+        <p class="modal-subtitle">Descreva o que precisa ser feito.</p>
+        <form id="task-form">
+          <label for="task-input" class="modal-label">Nome da tarefa</label>
+          <input type="text" id="task-input" class="modal-input" placeholder="Ex: Revisar relatório mensal" maxlength="120" autocomplete="off">
+          <span class="modal-error" id="task-error">Digite um nome para a tarefa.</span>
+
+          <label for="task-date" class="modal-label modal-label-spaced">Data</label>
+          <input type="date" id="task-date" class="modal-input">
+
+          <div class="modal-actions">
+            <button type="button" class="modal-button secondary" id="task-cancel">Cancelar</button>
+            <button type="submit" class="modal-button primary">Adicionar tarefa</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="confirm-modal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+        <h3 id="confirm-modal-title">Excluir tarefa</h3>
+        <p class="modal-subtitle" id="confirm-modal-text">Deseja excluir esta tarefa?</p>
+        <div class="modal-actions">
+          <button type="button" class="modal-button secondary" id="confirm-cancel">Cancelar</button>
+          <button type="button" class="modal-button danger" id="confirm-delete">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script src="assets/js/script.js"></script>
+  </body>
+
+</html>
